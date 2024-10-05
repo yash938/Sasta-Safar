@@ -4,7 +4,7 @@ package com.Ecommerce.store.controllers;
 import com.Ecommerce.store.dtos.UserDto;
 import com.Ecommerce.store.exceptions.AllException;
 import com.Ecommerce.store.services.UserService;
-import org.apache.coyote.Response;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,22 +20,22 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/create")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto){
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto){
         UserDto user = userService.createUser(userDto);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable int id){
+    public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto, @PathVariable int id){
         UserDto userDto1 = userService.updateUser(userDto, id);
         return new ResponseEntity<>(userDto1,HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<AllException> deleteUser(@PathVariable int id){
-        userService.deleteUser(id);
-        AllException userDeletedSuccessfully = AllException.builder().message("User deleted successfully").httpStatus(HttpStatus.OK).success(true).build();
-        return new ResponseEntity<>(userDeletedSuccessfully,HttpStatus.OK);
+       userService.deleteUser(id);
+       AllException.builder().success(true).message("User is deleted").httpStatus(HttpStatus.OK);
+       return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/users")
