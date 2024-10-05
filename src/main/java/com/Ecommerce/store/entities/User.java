@@ -30,5 +30,6 @@ public class User {
 
     @Column(length = 1000)
     private String about;
+    private String image;
 
 }
