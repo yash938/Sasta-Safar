@@ -4,6 +4,7 @@ import com.Ecommerce.store.Configurations.UserMapperConfig;
 import com.Ecommerce.store.Utility.Utility;
 import com.Ecommerce.store.dtos.UserDto;
 import com.Ecommerce.store.entities.User;
+import com.Ecommerce.store.exceptions.ResourceNotFoundException;
 import com.Ecommerce.store.repository.UserRepo;
 import com.Ecommerce.store.services.UserService;
 import org.modelmapper.ModelMapper;
@@ -32,7 +33,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public UserDto updateUser(UserDto userDto, int id) {
-        User user = userRepo.findById(id).orElseThrow(() -> new RuntimeException("user id is not found"));
+        User user = userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("user id is not found"));
 
 
       modelMapper.map(userDto,user);
@@ -45,7 +46,7 @@ public class UserServiceImp implements UserService {
     @Override
     public void deleteUser(int id) {
 
-        User userNotFound = userRepo.findById(id).orElseThrow(() -> new RuntimeException("user not found"));
+        User userNotFound = userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("user not found"));
         userRepo.delete(userNotFound);
 
     }
@@ -61,13 +62,13 @@ public class UserServiceImp implements UserService {
 
     @Override
     public UserDto getSingleUser(int id) {
-        User userIdIsNotFound = userRepo.findById(id).orElseThrow(() -> new RuntimeException("user id is not found"));
+        User userIdIsNotFound = userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("user id is not found"));
         return Utility.mapToUserDto(userIdIsNotFound);
     }
 
     @Override
     public UserDto getUserEmail(String email) {
-        User emailIsNotFound = userRepo.findByEmail(email).orElseThrow(() -> new RuntimeException("Email is not found"));
+        User emailIsNotFound = userRepo.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Email is not found"));
         return Utility.mapToUserDto(emailIsNotFound);
     }
 
