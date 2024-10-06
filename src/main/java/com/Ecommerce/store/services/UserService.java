@@ -1,6 +1,7 @@
 package com.Ecommerce.store.services;
 
 
+import com.Ecommerce.store.dtos.PaegableResponse;
 import com.Ecommerce.store.dtos.UserDto;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public interface UserService {
 
     void deleteUser(int id);
 
-    List<UserDto> getAllUser();
+    PaegableResponse<UserDto> getAllUser(int pageNumber, int pageSize, String sortBy, String sortDir);
 
     UserDto getSingleUser(int id);
 
