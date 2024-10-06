@@ -36,13 +36,17 @@ public class GlobalExceptionHandle {
     //handle api exception handling
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleApiResponseException(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+        Map<String, String> errors = new HashMap<>();
+
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();  // Get the field name
+            String errorMessage = error.getDefaultMessage();     // Get the default message from the validation
+            errors.put(fieldName, errorMessage);                 // Add to the errors map
+        });
 
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+
 
 
 

@@ -113,7 +113,7 @@ public class UserController {
         logger.info("user image name {}",singleUser.getImage());
         InputStream resource = imageFile.getResource(imageUploadPath, singleUser.getImage());
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-        StreamUtils.copy(resource,response.getOutputStream());
+        StreamUtils.copy(resource,response. getOutputStream());
     }
 
 
