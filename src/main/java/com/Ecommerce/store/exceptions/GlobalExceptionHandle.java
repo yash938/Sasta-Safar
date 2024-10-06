@@ -11,9 +11,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandle {
@@ -24,10 +26,8 @@ public class GlobalExceptionHandle {
    public    ResponseEntity<AllException> resourceNotFoundExceptionHandler(ResourceNotFoundException ex){
 
         logger.info("Exception Handler Invoked");
-
-        AllException build = AllException.builder().message(ex.getMessage()).httpStatus(HttpStatus.NOT_FOUND).success(true).build();
-        return new ResponseEntity<>(build,HttpStatus.OK);
-
+        AllException allException = new AllException(ex.getMessage(), true, HttpStatus.NOT_FOUND, LocalDate.now());
+        return new ResponseEntity<>(allException,HttpStatus.NOT_FOUND);
     }
 
 
@@ -35,20 +35,21 @@ public class GlobalExceptionHandle {
 
     //handle api exception handling
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String,Object>> handleApiReponseException(MethodArgumentNotValidException ex){
+    public ResponseEntity<Map<String, String>> handleApiResponseException(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
 
-        List<ObjectError> allErrors = ex.getBindingResult().getAllErrors();
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
 
-        Map<String, Object> objectObjectHashMap = new HashMap<>();
 
-        allErrors.stream().forEach(objectError -> {
 
-            String defaultMessage = objectError.getDefaultMessage();
-            String field = ((FieldError) objectError).getField();
-
-            objectObjectHashMap.put(field,defaultMessage);
-
-        });
-        return new ResponseEntity<>(objectObjectHashMap,HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(BadApiRequest.class)
+    public ResponseEntity<AllException> BadApiRequestExceptionHandler(BadApiRequest ex){
+        logger.info("Bad Api Request");
+        AllException allException = new AllException(ex.getMessage(), false, HttpStatus.BAD_REQUEST, LocalDate.now());
+        return  new ResponseEntity<>(allException,HttpStatus.BAD_REQUEST);
     }
 }

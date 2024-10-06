@@ -1,5 +1,7 @@
 package com.Ecommerce.store.exceptions;
 
+import org.apache.coyote.BadRequestException;
+
 public class ResourceNotFoundException extends RuntimeException{
 
     public ResourceNotFoundException(){
@@ -9,4 +11,6 @@ public class ResourceNotFoundException extends RuntimeException{
     public ResourceNotFoundException(String message){
         super(message);
     }
+
+
 }
