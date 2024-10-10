@@ -23,15 +23,12 @@ public class GlobalExceptionHandle {
     Logger logger = LoggerFactory.getLogger(GlobalExceptionHandle.class);
 
     @ExceptionHandler(ResourceNotFoundException.class)
-   public    ResponseEntity<AllException> resourceNotFoundExceptionHandler(ResourceNotFoundException ex){
+   public ResponseEntity<AllException> resourceNotFoundExceptionHandler(ResourceNotFoundException ex){
 
         logger.info("Exception Handler Invoked");
         AllException allException = new AllException(ex.getMessage(), true, HttpStatus.NOT_FOUND, LocalDate.now());
         return new ResponseEntity<>(allException,HttpStatus.NOT_FOUND);
     }
-
-
-
 
     //handle api exception handling
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -46,14 +43,13 @@ public class GlobalExceptionHandle {
 
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
-
-
-
-
     @ExceptionHandler(BadApiRequest.class)
     public ResponseEntity<AllException> BadApiRequestExceptionHandler(BadApiRequest ex){
         logger.info("Bad Api Request");
         AllException allException = new AllException(ex.getMessage(), false, HttpStatus.BAD_REQUEST, LocalDate.now());
         return  new ResponseEntity<>(allException,HttpStatus.BAD_REQUEST);
     }
+
+
+
 }

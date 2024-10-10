@@ -55,12 +55,12 @@ public class UserServiceImp implements UserService {
     public UserDto updateUser(UserDto userDto, int id) {
         User user = userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("user id is not found"));
 
-        user.setName(user.getName());
-        user.setEmail(user.getEmail());
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());
-        user.setAbout(user.getAbout());
-        user.setGender(user.getGender());
-        user.setImage(user.getImage());
+        user.setAbout(userDto.getAbout());
+        user.setGender(userDto.getGender());
+        user.setImage(userDto.getImage());
 
         User save = userRepo.save(user);
         return modelMapper.map(save,UserDto.class);
