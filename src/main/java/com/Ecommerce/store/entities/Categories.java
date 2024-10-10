@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Data
 @AllArgsConstructor
@@ -23,4 +26,8 @@ public class Categories {
     @Column(length = 50)
     private String description;
     private String coverImage;
+
+    @OneToMany(mappedBy = "categories",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<Product> products = new ArrayList<>();
+
 }

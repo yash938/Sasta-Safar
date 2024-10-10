@@ -2,11 +2,13 @@ package com.Ecommerce.store.controllers;
 
 import com.Ecommerce.store.dtos.CategotyDto;
 import com.Ecommerce.store.dtos.PaegableResponse;
+import com.Ecommerce.store.dtos.ProductDto;
 import com.Ecommerce.store.dtos.UserDto;
 import com.Ecommerce.store.exceptions.AllException;
 import com.Ecommerce.store.exceptions.ImageResponse;
 import com.Ecommerce.store.services.CategoryService;
 import com.Ecommerce.store.services.ImageFile;
+import com.Ecommerce.store.services.ProductService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Path;
 import jakarta.validation.Valid;
@@ -35,6 +37,8 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private ProductService productService;
     @Autowired
     private ImageFile imageFile;
 
@@ -94,6 +98,27 @@ public class CategoryController {
 
 
 
+     //create product with category
+    @PostMapping("/{categoryId}/products")
+    public ResponseEntity<ProductDto> createProductWithCategory(@PathVariable int categoryId,@RequestBody ProductDto productDto){
+        ProductDto products = productService.createWithCategory(categoryId, productDto);
+        return new ResponseEntity<>(products,HttpStatus.CREATED);
+    }
+
+
+
+    //update category of product
+    @PutMapping("/{categoryId}/products/{productId}")
+    public ResponseEntity<ProductDto> updateCategory(@PathVariable int categoryId,@PathVariable int productId){
+        ProductDto productDto = productService.updateProduct(categoryId, productId);
+        return new ResponseEntity<>(productDto,HttpStatus.OK);
+    }
+
+
+
+
+
+
     @GetMapping("/image/{categoryId}")
     public void ServeImage(@PathVariable int categoryId, HttpServletResponse response) throws IOException {
         CategotyDto singleCategory = categoryService.getSingleCategory(categoryId);
@@ -102,6 +127,9 @@ public class CategoryController {
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         StreamUtils.copy(resource,response. getOutputStream());
     }
+
+
+
 
 
 }
