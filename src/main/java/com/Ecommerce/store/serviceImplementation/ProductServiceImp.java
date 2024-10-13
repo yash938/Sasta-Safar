@@ -69,7 +69,7 @@ public class ProductServiceImp  implements ProductService {
 
     @Override
     public PaegableResponse<ProductDto> getAllProduct(int pageNumber, int pageSize, String sortBy, String sortDir) {
-        Sort sort = (sortBy.equalsIgnoreCase("asc")? (Sort.by(sortBy).ascending()):(Sort.by(sortBy).descending()) );
+        Sort sort = (sortDir.equalsIgnoreCase("asc")? (Sort.by(sortBy).ascending()):(Sort.by(sortBy).descending()) );
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
 
         Page<Product> all = productRepo.findAll(pageRequest);
@@ -131,10 +131,11 @@ public class ProductServiceImp  implements ProductService {
     @Override
     public PaegableResponse<ProductDto> getAllOfCategory(int categoryId,int pageNumber,int pageSize,String sortBy,String sortDir) {
 
-        Categories categories = categoryRepo.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category id is not found" + categoryId));
-
-        Page<ProductDto> byCategory = productRepo.findByCategory(categories);
-        return Helper.getPaegable(byCategory,ProductDto.class);
+         Categories categories = categoryRepo.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category id is not found" + categoryId));
+         Sort sort = (sortDir.equalsIgnoreCase("asc"))?(Sort.by(sortBy).ascending()) :(Sort.by(sortBy).descending()) ;
+        PageRequest pageable = PageRequest.of(pageNumber, pageSize, sort);
+        Page<Product> byCategories = productRepo.findByCategories(categories, pageable);
+      return Helper.getPaegable(byCategories,ProductDto.class);
     }
 
 
