@@ -16,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Cart {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int cartId;
     private Date createdAt;
     @OneToOne
@@ -23,7 +24,7 @@ public class Cart {
     private User user;
 
 
-    @OneToMany(mappedBy = "cart",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "cart",cascade = CascadeType.ALL,fetch = FetchType.EAGER,orphanRemoval = true)
     private List<CartItem> cartItems = new ArrayList<>();
 }
 

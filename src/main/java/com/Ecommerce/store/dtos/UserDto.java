@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserDto {
 
-    private int id;
+    private int userId;
 
 
     @Size(min = 3,max = 20)
