@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -31,5 +34,8 @@ public class User {
     @Column(length = 1000)
     private String about;
     private String image;
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "user",cascade = CascadeType.REMOVE)
+    private List<Order> orders = new ArrayList<>();
 
 }
