@@ -2,6 +2,7 @@ package com.Ecommerce.store.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "orders")
 public class Order {
      @Id
@@ -30,6 +32,7 @@ public class Order {
      private String billingAddress;
 
      private String billingName;
+     private long billingPhone;
      private Date orderDate;
      private Date deliveredDate;
 

@@ -4,6 +4,7 @@ import com.Ecommerce.store.entities.OrderItems;
 import com.Ecommerce.store.entities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class OrderDto {
     private int orderId;
 
@@ -26,6 +28,7 @@ public class OrderDto {
     private String billingAddress;
 
     private String billingName;
+    private long billingPhone;
     private Date orderDate = new Date();
     private Date deliveredDate;
 
