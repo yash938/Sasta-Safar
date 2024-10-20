@@ -19,6 +19,6 @@ public interface OrderService {
     PaegableResponse<OrderDto> getOrders(int pageNumber, int pageSize, String sortBy, String sortDir);
 
 
-    List<OrderDto> updateOrder(CreateOrderList createOrderList);
+    OrderDto updateOrder(CreateOrderList createOrderList,int orderId);
 
 }

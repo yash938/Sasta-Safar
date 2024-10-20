@@ -113,9 +113,17 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public List<OrderDto> updateOrder(CreateOrderList orderList) {
+    public OrderDto updateOrder(CreateOrderList orderList,int orderId) {
 
+        Order ordersId = orderRepo.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("order Id is not found"));
+        ordersId.setOrderDate(new Date());
+        ordersId.setBillingPhone(orderList.getBillingPhone());
+        ordersId.setBillingAddress(orderList.getBillingAddress());
+        ordersId.setBillingName(orderList.getBillingName());
+        ordersId.setPaymentStatus(orderList.getPaymentStatus());
+        ordersId.setOrderStatus(orderList.getOrderStatus());
 
-        return null;
+        Order updateOrder = orderRepo.save(ordersId);
+        return modelMapper.map(updateOrder,OrderDto.class);
     }
 }
