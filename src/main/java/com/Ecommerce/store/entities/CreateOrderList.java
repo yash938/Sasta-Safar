@@ -2,6 +2,8 @@ package com.Ecommerce.store.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,10 +19,10 @@ public class CreateOrderList
 
 {
 
-    @NotBlank(message = "Cart Id is required")
+    @NotNull(message = "Cart Id is required")
     private int cartId;
 
-    @NotBlank(message = "User Id is required")
+    @NotNull(message = "User Id is required")
     private int userId;
     private String orderStatus ="PENDING" ;
 
@@ -31,7 +33,8 @@ public class CreateOrderList
     @NotBlank(message = "Name is required")
     private String billingName;
 
-    @NotBlank(message = "Phone no is required")
+    @NotNull(message = "Phone no is required")
+    @Column(length = 10)
     private long billingPhone;
 
 

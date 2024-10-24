@@ -46,58 +46,48 @@ public class CartServiceServiceImp implements CartService {
         int quantity = itemToCart.getQuantity();
         int productId = itemToCart.getProductId();
 
-        //fetch the product from db
-        Product product = productRepo.findById(productId).orElseThrow(() -> new ResourceNotFoundException("product id is not found on database"));
-        User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User id is not found"));
+        // Fetch the product from db
+        Product product = productRepo.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product id is not found in the database"));
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User id is not found"));
 
+        // Fetch or create a cart for the user
+        Cart cart = cartRepo.findByUser(user).orElseGet(() -> {
+            Cart newCart = new Cart();
+            newCart.setCreatedAt(new Date());
+            newCart.setUser(user);
+            return cartRepo.save(newCart);
+        });
 
-        Cart cart = null;
-
-        try{
-           cart= cartRepo.findByUser(user).get();
-        }catch (NoSuchElementException e){
-            cart= new Cart();
-            cart.setCreatedAt(new Date());
-            cart = cartRepo.save(cart);
-        }
-
-//        boolean updated= false;
-        AtomicReference<Boolean> updated = new AtomicReference<Boolean>(false);
-        //perform cart operation
-        List<CartItem> cartItems = cart.getCartItems();
-        List<CartItem> updatedItems = cartItems.stream().map(item -> {
+        // Check if the product is already in the cart
+        AtomicReference<Boolean> updated = new AtomicReference<>(false);
+        cart.getCartItems().forEach(item -> {
             if (item.getProduct().getProductId() == productId) {
-                //item already present in cart
+                // If item already exists, update its quantity and total price
                 item.setQuantity(quantity);
                 item.setTotalPrice(quantity * product.getPrice());
                 updated.set(true);
-
             }
+        });
 
-            return item;
-        }).collect(Collectors.toList());
+        // If the item was not already in the cart, add it
+        if (!updated.get()) {
+            CartItem cartItem = CartItem.builder()
+                    .quantity(quantity)
+                    .totalPrice(quantity * product.getPrice())
+                    .cart(cart)
+                    .product(product)
+                    .build();
+            cart.getCartItems().add(cartItem);
+        }
 
-        cart.setCartItems(updatedItems);
-
-
-        //create items
-       if(!updated.get()){
-           CartItem build = CartItem.builder()
-                   .quantity(quantity)
-                   .totalPrice(quantity * product.getPrice())
-                   .cart(cart)
-                   .product(product).build();
-
-           cart.getCartItems().add(build);
-       }
-        cart.setUser(user);
-
+        // Save the updated cart
         Cart updatedCart = cartRepo.save(cart);
 
-        return modelMapper.map(updatedCart,CartDto.class);
-
-
+        return modelMapper.map(updatedCart, CartDto.class);
     }
+
 
     @Override
     public void removeItemToCart(int userId, int cartItem) {

@@ -123,7 +123,7 @@ public class CategoryController {
             @RequestParam(value = "sortBy",defaultValue = "title",required = false) String sortBy,
             @RequestParam(value = "sortDir",defaultValue = "asc",required = false) String sortDir
             ){
-        PaegableResponse<ProductDto> allOfCategory = productService.getAllOfCategory(categoryId, pageNumber, pageSize, sortBy, sortDir);
+        PaegableResponse<ProductDto> allOfCategory = productService.    getAllOfCategory(categoryId, pageNumber, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(allOfCategory,HttpStatus.OK);
     }
 

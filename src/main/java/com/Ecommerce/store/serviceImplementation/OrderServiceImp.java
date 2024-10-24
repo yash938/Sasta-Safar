@@ -38,53 +38,66 @@ public class OrderServiceImp implements OrderService {
     public OrderDto createOrder(CreateOrderList orderDto) {
         int cartId = orderDto.getCartId();
         int userId = orderDto.getUserId();
-        User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User id is not found!!"));
 
+        // Fetch user and cart
+        User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User id is not found!!"));
         Cart cart = cartRepo.findById(cartId).orElseThrow(() -> new ResourceNotFoundException("Cart id is not found"));
         List<CartItem> cartItems = cart.getCartItems();
 
-        if(cartItems.size() == 0){
+        if (cartItems.isEmpty()) {
             throw new BadApiRequest("Invalid number of items in cart");
         }
 
+        // Create the order entity
         Order order = Order.builder()
                 .billingName(orderDto.getBillingName())
                 .billingPhone(orderDto.getBillingPhone())
                 .billingAddress(orderDto.getBillingAddress())
                 .orderDate(new Date())
-                .deliveredDate(null)
+                .deliveredDate(null) // Set delivered date when necessary
                 .paymentStatus(orderDto.getPaymentStatus())
                 .orderStatus(orderDto.getOrderStatus())
                 .user(user)
                 .build();
 
+        AtomicReference<Integer> orderAmount = new AtomicReference<>(0);
 
-        AtomicReference<Integer> orderAmout = new AtomicReference<>(0);
+        // Create OrderItems from CartItems and calculate the total order amount
         List<OrderItems> orderItems = cartItems.stream().map(cartItem -> {
 
-
-            //cartitem -> orderItem
+            // Ensure that the product is set in each OrderItem
+            Product product = cartItem.getProduct();
+            if (product == null) {
+                throw new BadApiRequest("Product not found in cart item!");
+            }
 
             OrderItems orderItem = OrderItems.builder()
                     .quantity(cartItem.getQuantity())
-                    .totalPrice(cartItem.getTotalPrice() * cartItem.getProduct().getDiscountPrice())
-                    .order(order)
+                    .totalPrice(cartItem.getTotalPrice() * product.getDiscountPrice())  // Assuming you multiply price by quantity or discount
+                    .product(product)  // Set the product from cartItem
+                    .order(order)  // Set the order reference
                     .build();
 
-            orderAmout.set(orderAmout.get() + orderItem.getTotalPrice());
+            // Calculate total order amount
+            orderAmount.updateAndGet(v -> v + orderItem.getTotalPrice());
             return orderItem;
         }).collect(Collectors.toList());
 
+        // Set the orderItems and orderAmount in the order
         order.setOrderItems(orderItems);
-        order.setOrderAmount(orderAmout.get());
+        order.setOrderAmount(orderAmount.get());
 
+        // Clear the cart after order creation
         cart.getCartItems().clear();
-
         cartRepo.save(cart);
-        Order save = orderRepo.save(order);
 
-        return modelMapper.map(save,OrderDto.class);
+        // Save the order
+        Order savedOrder = orderRepo.save(order);
+
+        // Return the mapped OrderDto
+        return modelMapper.map(savedOrder, OrderDto.class);
     }
+
 
     @Override
     public void removeOrder(int orderId) {
