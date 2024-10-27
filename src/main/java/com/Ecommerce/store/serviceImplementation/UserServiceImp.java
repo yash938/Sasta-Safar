@@ -1,12 +1,13 @@
 package com.Ecommerce.store.serviceImplementation;
 
-import com.Ecommerce.store.Configurations.UserMapperConfig;
 import com.Ecommerce.store.Utility.Helper;
 import com.Ecommerce.store.Utility.Utility;
 import com.Ecommerce.store.dtos.PaegableResponse;
 import com.Ecommerce.store.dtos.UserDto;
+import com.Ecommerce.store.entities.Role;
 import com.Ecommerce.store.entities.User;
 import com.Ecommerce.store.exceptions.ResourceNotFoundException;
+import com.Ecommerce.store.repository.RoleRepo;
 import com.Ecommerce.store.repository.UserRepo;
 import com.Ecommerce.store.services.UserService;
 import org.modelmapper.ModelMapper;
@@ -21,7 +22,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -46,17 +46,35 @@ public class UserServiceImp implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Override
+    @Value("${role.normal.id}")
+    private int normalRoleId;
+
+    @Autowired
+    private RoleRepo roleRepo;
+
+       @Override
     public UserDto createUser(UserDto userDto) {
-        User map = modelMapper.map(userDto, User.class);
+        User user = modelMapper.map(userDto, User.class);
 
-        //Encoding Password
-        map.setPassword(passwordEncoder.encode(map.getPassword()));
+        // Encoding Password
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+           logger.info("Normal Role ID: {}", normalRoleId);
 
-        User save = userRepo.save(map);
-        UserDto map1 = modelMapper.map(save, UserDto.class);
-        return map1;
+        // Fetch role of normal user and set it to the user
+//           Role roles = roleRepo.findById(normalRoleId).get();
+           Role role = roleRepo.findById(normalRoleId).get();
+
+
+           // Initialize roles collection if null
+
+          user.getRoles().add(role);
+
+        User savedUser = userRepo.save(user);
+        logger.info("User created with ID: {}", savedUser.getUserId());
+
+        return modelMapper.map(savedUser, UserDto.class);
     }
+
 
     @Override
     public UserDto updateUser(UserDto userDto, int id) {
@@ -124,5 +142,10 @@ public class UserServiceImp implements UserService {
         List<User> byNameContaining = userRepo.findByNameContaining(keyword);
         List<UserDto> collect = byNameContaining.stream().map(byNameContainings -> Utility.mapToUserDto(byNameContainings)).collect(Collectors.toList());
         return collect;
+    }
+
+    @Override
+    public Optional<User> findUserByEmailForGoogle(String email) {
+        return userRepo.findByEmail(email);
     }
 }

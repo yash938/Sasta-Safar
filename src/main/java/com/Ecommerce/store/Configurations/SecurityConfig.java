@@ -6,6 +6,7 @@ import com.Ecommerce.store.Security.SecurityFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 
@@ -41,9 +42,18 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Disable CSRF protection (use cautiously)
                 .cors(cors -> cors.disable()) // Disable CORS (configure as needed)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST, "/user").permitAll() // Ensure correct endpoint
+                        .requestMatchers(HttpMethod.DELETE,"/user/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/product/create").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/user/image/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/product/image/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/category/create").hasRole("ADMIN")
+
                         .requestMatchers("/auth/login").permitAll()
-                        .anyRequest().authenticated() // Require authentication for all requests
+                        .requestMatchers("/auth/google").permitAll()
+                        .anyRequest().authenticated() // Or .anyRequest().permitAll() for testing
                 )
+
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling.authenticationEntryPoint(authenticationEntryPoint)
                 )

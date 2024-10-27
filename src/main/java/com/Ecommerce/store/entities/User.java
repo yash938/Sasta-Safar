@@ -1,14 +1,17 @@
 package com.Ecommerce.store.entities;
 
 
+import com.Ecommerce.store.dtos.RoleDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -36,9 +39,23 @@ public class User implements UserDetails {
     private String about;
     private String image;
 
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Role> roles = new HashSet<>();
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Cart> carts = new ArrayList<>();
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        Set<SimpleGrantedAuthority> authorities = this.roles.stream().map(role -> new SimpleGrantedAuthority(role.getRoleName())).collect(Collectors.toSet());
+
+        return authorities;
     }
 
     @Override
@@ -71,5 +88,7 @@ public class User implements UserDetails {
         return true;
     }
 }
+
+
 
 //securePass!987

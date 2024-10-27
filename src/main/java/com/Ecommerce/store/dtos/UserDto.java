@@ -6,12 +6,17 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UserDto {
 
     private int userId;
@@ -35,4 +40,6 @@ public class UserDto {
 
     @ImageValid
     private String image;
+
+    private Set<RoleDto> roles = new HashSet<>();
 }

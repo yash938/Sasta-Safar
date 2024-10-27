@@ -51,10 +51,19 @@ public class UserController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<AllException> deleteUser(@PathVariable int id){
-       userService.deleteUser(id);
-       AllException.builder().success(true).message("User is deleted").httpStatus(HttpStatus.OK);
-       return new ResponseEntity<>(HttpStatus.OK);
+        userService.deleteUser(id);
+
+        // Build the response with a message and status
+        AllException userIsDeleted = AllException.builder()
+                .success(true)
+                .message("User is deleted")
+                .httpStatus(HttpStatus.OK)
+                .build();
+
+        // Include userIsDeleted in the ResponseEntity
+        return new ResponseEntity<>(userIsDeleted, HttpStatus.OK);
     }
+
 
     @GetMapping("/users")
     public ResponseEntity<PaegableResponse<UserDto>> getAll(
