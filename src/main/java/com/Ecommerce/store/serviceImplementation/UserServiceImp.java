@@ -19,6 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -41,33 +44,26 @@ public class UserServiceImp implements UserService {
     @Autowired
     private UserRepo userRepo;
 
-    @Value("${user.profile.image.path}")
-    private String imagePath;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Value("${role.normal.id}")
-    private int normalRoleId;
-
     @Autowired
     private RoleRepo roleRepo;
 
+    @Value("${user.profile.image.path}")
+    private String imagePath;
+
+
+    @Autowired
+    private PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+
+
        @Override
-    public UserDto createUser(UserDto userDto) {
-        User user = modelMapper.map(userDto, User.class);
+       public UserDto createUser(UserDto userDto) {
+           User user = modelMapper.map(userDto, User.class);
 
-        // Encoding Password
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-           logger.info("Normal Role ID: {}", normalRoleId);
-
-        // Fetch role of normal user and set it to the user
-//           Role roles = roleRepo.findById(normalRoleId).get();
-           Role role = roleRepo.findById(normalRoleId).get();
-
-
-           // Initialize roles collection if null
-
-          user.getRoles().add(role);
+           Role role = roleRepo.findByName("ROLE_NORMAL").orElseThrow(() -> new UsernameNotFoundException("name is not found"));
+           user.setRoles(List.of(role));
 
         User savedUser = userRepo.save(user);
         logger.info("User created with ID: {}", savedUser.getUserId());
@@ -82,7 +78,7 @@ public class UserServiceImp implements UserService {
 
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
+        user.setPassword(passwordEncoder().encode(user.getPassword()));
         user.setAbout(userDto.getAbout());
         user.setGender(userDto.getGender());
         user.setImage(userDto.getImage());
