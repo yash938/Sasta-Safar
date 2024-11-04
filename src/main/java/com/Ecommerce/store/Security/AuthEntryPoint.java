@@ -11,12 +11,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Component
-public class JWTAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class AuthEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-
         PrintWriter writer = response.getWriter();
-        writer.println("Access Denied Request " + authException.getMessage());
+        writer.println("Unauthorized user to access the resource "+authException.getStackTrace());
     }
 }
