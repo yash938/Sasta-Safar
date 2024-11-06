@@ -18,14 +18,6 @@ class SastaSafarApplicationTests {
 	void contextLoads() {
 	}
 
-	@Test
-	void testToken(){
-		User user = userRepo.findByEmail("yash32860@gmail.com").get();
-		String s = jwtHelper.generateToken(String.valueOf(user));
-		System.out.println(s);
 
-		System.out.println(jwtHelper.getUsernameFromToken(s));
-		System.out.println(jwtHelper.isTokenExpired(s));
-	}
 
 }
