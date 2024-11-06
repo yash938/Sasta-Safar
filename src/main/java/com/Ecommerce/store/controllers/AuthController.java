@@ -17,10 +17,7 @@ import org.springframework.security.core.Authentication;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -39,6 +36,8 @@ public class AuthController {
     @Autowired
     private RefreshTokenService refreshTokenService;
     private Logger logger = LoggerFactory.getLogger(AuthController.class);
+
+    @GetMapping("/generateRefreshToken")
 
     public ResponseEntity<JwtResponse> generateRefreshToken(@RequestBody RefreshToken refreshToken){
         RefreshTokenDto byToken = refreshTokenService.findByToken(refreshToken.getRefreshToken());
