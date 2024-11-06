@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -24,12 +25,14 @@ public class OrderController {
 
 
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('NORMAL','ADMIN')")
     public ResponseEntity<OrderDto> createOrder(@Valid @RequestBody CreateOrderList createOrderList){
         OrderDto order = orderService.createOrder(createOrderList);
         return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/remove")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AllException> removeItem(int orderId){
         orderService.removeOrder(orderId);
         AllException removeOrder = new AllException("Order removed successfully", true, HttpStatus.OK, LocalDate.now());
@@ -37,6 +40,7 @@ public class OrderController {
     }
 
     @GetMapping("/{userId}")
+
     public ResponseEntity<List<OrderDto>> getUser(@PathVariable int userId){
         List<OrderDto> userOrder = orderService.getUserOrder(userId);
         return new ResponseEntity<>(userOrder,HttpStatus.OK);
@@ -44,6 +48,7 @@ public class OrderController {
 
 
     @GetMapping("/allOrders")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PaegableResponse<OrderDto>> getAllOrders(
             @RequestParam(value = "pageNumber",defaultValue = "0",required = false) int pageNumber,
             @RequestParam(value = "pageSize" , defaultValue = "10",required = false) int pageSize,
@@ -56,8 +61,8 @@ public class OrderController {
     }
 
 
-
     @PutMapping("/update/{orderId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<OrderDto> updateOrder(@RequestBody CreateOrderList orderList,@PathVariable int orderId){
         OrderDto orderDto = orderService.updateOrder(orderList, orderId);
         return new ResponseEntity<>(orderDto,HttpStatus.OK);    

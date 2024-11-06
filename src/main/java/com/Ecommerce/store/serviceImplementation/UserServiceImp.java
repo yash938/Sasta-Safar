@@ -65,6 +65,8 @@ public class UserServiceImp implements UserService {
            Role role = roleRepo.findByName("ROLE_NORMAL").orElseThrow(() -> new UsernameNotFoundException("name is not found"));
            user.setRoles(List.of(role));
 
+           user.setPassword(passwordEncoder().encode(user.getPassword()));
+
         User savedUser = userRepo.save(user);
         logger.info("User created with ID: {}", savedUser.getUserId());
 

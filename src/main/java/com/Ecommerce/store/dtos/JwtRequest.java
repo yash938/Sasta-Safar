@@ -1,5 +1,4 @@
-package com.Ecommerce.store.entities;
-
+package com.Ecommerce.store.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

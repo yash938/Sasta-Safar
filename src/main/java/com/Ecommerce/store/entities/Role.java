@@ -1,21 +1,22 @@
 package com.Ecommerce.store.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
+@Data
+@ToString
 public class Role {
-
     @Id
-    private int roleId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    private String name;
 
-    private String roleName;
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
+    @ToString.Exclude
+    private List<User> users = new ArrayList<>();
 }
