@@ -37,6 +37,11 @@ public class UserController {
 
     @Autowired
     private ImageFile imageFile;
+
+    @GetMapping("/test")
+    public String test(){
+        return "Hello yash";
+    }
     @PostMapping("/create")
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto){
         UserDto user = userService.createUser(userDto);
