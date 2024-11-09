@@ -34,8 +34,14 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
+
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+
+
+
         httpSecurity.csrf(csrf -> csrf.disable())
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(new CorsConfigurationSource() {
                     @Override
@@ -60,6 +66,8 @@ public class SecurityConfig {
                                 .requestMatchers("/category/create").hasRole("ADMIN")
                                 .requestMatchers("/auth/generateToken").permitAll()
                                 .requestMatchers("/auth/**").authenticated()
+                                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**").permitAll()
+
                                 .anyRequest().permitAll()
 
 
