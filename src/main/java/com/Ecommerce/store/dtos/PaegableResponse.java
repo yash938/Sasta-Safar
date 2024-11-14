@@ -12,11 +12,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaegableResponse<T> {
-    private List<T> content;
-    private int pageNumber;
-    private int pageSize;
-    private long totalElements;
-    private long totalPages;
-    private boolean lastPage;
+        private List<T> content;
+        private int pageNumber;
+        private int pageSize;
+        private long totalElements;
+        private long totalPages;
+        private boolean lastPage;
 }
 
