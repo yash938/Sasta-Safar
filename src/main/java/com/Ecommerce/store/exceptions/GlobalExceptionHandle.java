@@ -26,7 +26,7 @@ public class GlobalExceptionHandle {
    public ResponseEntity<AllException> resourceNotFoundExceptionHandler(ResourceNotFoundException ex){
 
         logger.info("Exception Handler Invoked");
-        AllException allException = new AllException(ex.getMessage(), true, HttpStatus.NOT_FOUND, LocalDate.now());
+        AllException allException =  new AllException(ex.getMessage(), true, HttpStatus.NOT_FOUND, LocalDate.now());
         return new ResponseEntity<>(allException,HttpStatus.NOT_FOUND);
     }
 
