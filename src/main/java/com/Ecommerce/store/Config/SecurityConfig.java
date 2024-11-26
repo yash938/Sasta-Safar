@@ -65,7 +65,7 @@ public class SecurityConfig {
                                 .requestMatchers("/order/**").hasRole("ADMIN")
                                 .requestMatchers("/category/create").hasRole("ADMIN")
                                 .requestMatchers("/auth/generateToken").permitAll()
-                                .requestMatchers("/auth/**").authenticated()
+                                .requestMatchers("/auth/**").permitAll()
                                 .requestMatchers("/swagger-ui/index.html", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**").permitAll()
 
                                 .anyRequest().permitAll()

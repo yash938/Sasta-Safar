@@ -72,7 +72,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             //valid token
             if(username.equals(userDetails.getUsername()) && !jwtHelper.isTokenExpired(token)){
-                //security contect ke andar authentication set karenge
+                //security conte    ct ke andar authentication set karenge
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
