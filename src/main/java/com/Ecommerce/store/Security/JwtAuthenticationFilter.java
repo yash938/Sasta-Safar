@@ -42,28 +42,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if(authorizaion != null && authorizaion.startsWith("Bearer")){
             token = authorizaion.substring(7);
 
-            try {
-                username = jwtHelper.getUsernameFromToken(token);
-                logger.info("Token username ",username);
+                try {
+                    username = jwtHelper.getUsernameFromToken(token);
+                    logger.info("Token username ",username);
 
-            }catch (IllegalArgumentException e) {
-                e.printStackTrace();
-                logger.info("illegal argument while fetching the argument " + e.getMessage());
-            }
-            catch (ExpiredJwtException ex){
-                logger.info("Given JWT is Expired " + ex.getMessage());
-            }
-            catch (MalformedJwtException ex){
-                logger.info("Some changed has done in token "+ex.getMessage());
-            }
-            catch (Exception ex){
-                ex.printStackTrace();
-            }
+                }catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                    logger.info("illegal argument while fetching the argument " + e.getMessage());
+                }
+                catch (ExpiredJwtException ex){
+                    logger.info("Given JWT is Expired " + ex.getMessage());
+                }
+                catch (MalformedJwtException ex){
+                    logger.info("Some changed has done in token "+ex.getMessage());
+                }
+                catch (Exception ex){
+                    ex.printStackTrace();
+                }
 
 
-        }else{
-            logger.info("Invalid Header");
-        }
+            }else{
+                logger.info("Invalid Header");
+            }
 
 
         //username null nahi hai toh

@@ -17,10 +17,10 @@ import java.util.function.Function;
 public class JwtHelper {
 
     // Token validity duration
-    public static final long TOKEN_VALID = 5 * 6 * 60 * 1000; // 30 minutes
+        public static final long TOKEN_VALID = 5 * 6 * 60 * 1000; // 30 minutes
 
-    // Secret key for generating and validating token
-    public static final String SECRET_KEY = "yashsharmayashsharmayashsharmayashashsarmajskldjljjklcmklnlisjdlkclkxmc";
+        // Secret key for generating and validating token
+        public static final String SECRET_KEY = "yashsharmayashsharmayashsharmayashashsarmajskldjljjklcmklnlisjdlkclkxmc";
 
     private static final Logger logger = LoggerFactory.getLogger(JwtHelper.class);
 
@@ -30,8 +30,8 @@ public class JwtHelper {
     }
 
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = getAllClaimsFromToken(token);
-        return claimsResolver.apply(claims);
+            final Claims claims = getAllClaimsFromToken(token);
+            return claimsResolver.apply(claims);
     }
 
     // For retrieving any information from token

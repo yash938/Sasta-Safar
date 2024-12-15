@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -18,5 +19,6 @@ public class PaegableResponse<T> {
         private long totalElements;
         private long totalPages;
         private boolean lastPage;
+
 }
 
